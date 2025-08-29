@@ -1,0 +1,18 @@
+/* style.css - estilos customizados além do Tailwind */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+.modal-body { padding-bottom: 100px; }
+.selectable-btn, .selectable-multi-btn {
+    transition: all 0.2s ease-in-out;
+}
+.selectable-btn.active, .selectable-multi-btn.active {
+    background-color: #16a34a;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.material-symbols-outlined {
+    vertical-align: bottom;
+}

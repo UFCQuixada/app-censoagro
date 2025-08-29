@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Censo Agropecuário 2025</title>
+    <meta name="theme-color" content="#166534"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Estilos customizados -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Manifest e ícones -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <!-- Ícones para diferentes tamanhos -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="shortcut icon" href="assets/favicon.ico">
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <div id="app" class="relative min-h-screen pb-40">
+
+        <header class="bg-green-800 text-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-20">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-3xl">eco</span>
+                <h1 class="text-xl font-bold">Censo Agropecuário de Quixadá</h1>
+            </div>
+            <div id="menu-wrapper" class="relative">
+                <button id="record-counter-btn" class="bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-full h-10 w-10 flex items-center justify-center transition-colors">
+                    <span id="record-counter-badge">0</span>
+                </button>
+                <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-30 text-gray-700">
+                    <a href="#" id="delete-all-btn" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"><span class="material-symbols-outlined">delete_sweep</span> Remover todos</a>
+                    <a href="#" id="install-pwa-btn" class="hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"><span class="material-symbols-outlined">download</span> Instalar App</a>
+                    <a href="#" id="about-btn" class="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"><span class="material-symbols-outlined">info</span> Sobre</a>
+                </div>
+            </div>
+        </header>
+
+        <main id="records-list-container" class="pt-20 px-4 pb-24"></main>
+
+        <div id="empty-state" class="hidden pt-20 px-4 text-center text-gray-500">
+            <div class="mt-16 flex flex-col items-center">
+                <span class="material-symbols-outlined text-6xl mb-4">description</span>
+                <h2 class="text-2xl font-semibold">Nenhum registro encontrado</h2>
+                <p class="mt-2">Clique em "Novo" para adicionar o primeiro registro.</p>
+            </div>
+        </div>
+
+        <footer class="fixed bottom-[1vh] left-0 right-0 flex justify-center items-center z-10 p-4 gap-4">
+             <button id="export-csv-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center gap-2 transition-transform transform hover:scale-105">
+                <span class="material-symbols-outlined">csv</span>
+                Exportar CSV
+            </button>
+            <button id="add-new-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center gap-2 transition-transform transform hover:scale-105">
+                <span class="material-symbols-outlined">add_circle</span>
+                Novo
+            </button>
+        </footer>
+    </div>
+
+    <div id="form-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col relative">
+            <header class="p-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 flex justify-between items-center">
+                <h2 id="modal-title" class="text-2xl font-bold text-green-800">Adicionar Novo Registro</h2>
+                <button id="lgpd-info-btn" class="text-blue-600 hover:text-blue-800" title="Informações sobre a LGPD">
+                    <span class="material-symbols-outlined text-3xl">info</span>
+                </button>
+            </header>
+            
+            <div class="overflow-y-auto p-6 modal-body">
+                <form id="census-form">
+                    <input type="hidden" id="record-id" name="record-id">
+
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Identificação do produtor e estabelecimento</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2"><label for="nomeCompleto" class="block text-lg font-medium text-gray-700">Nome completo*</label><input type="text" id="nomeCompleto" name="nomeCompleto" required placeholder="Ex: João da Silva" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                            <div><label for="cpf" class="block text-lg font-medium text-gray-700">CPF</label><input type="text" id="cpf" name="cpf" inputmode="numeric" placeholder="111.222.333-44" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                            <div><label for="telefone" class="block text-lg font-medium text-gray-700">Telefone</label><input type="tel" id="telefone" name="telefone" inputmode="numeric" placeholder="(88) 91234-5678" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                            <div class="md:col-span-2"><label for="endereco" class="block text-lg font-medium text-gray-700">Endereço da propriedade</label><input type="text" id="endereco" name="endereco" placeholder="Ex: Sítio Cajueiro, Distrito de Juá" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                             <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-lg font-medium text-gray-700">Geolocalização</label>
+                                    <div class="flex gap-2 mt-1">
+                                        <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly class="block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                        <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly class="block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                    </div>
+                                </div>
+                                <button type="button" id="get-coords-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md flex items-center justify-center gap-2 text-lg"><span class="material-symbols-outlined">location_on</span> Obter coordenadas</button>
+                            </div>
+                            <div><label for="areaTotal" class="block text-lg font-medium text-gray-700">Área total (ha)</label><input type="number" id="areaTotal" name="areaTotal" step="0.1" placeholder="Ex: 50.5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                             <div><label for="areaProdutiva" class="block text-lg font-medium text-gray-700">Área produtiva (ha)</label><input type="number" id="areaProdutiva" name="areaProdutiva" step="0.1" placeholder="Ex: 25.5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Tipo de posse e documentação</h3>
+                         <div class="md:col-span-2">
+                            <label for="posseTerra" class="block text-lg font-medium text-gray-700">Tipo de posse da terra</label>
+                            <select id="posseTerra" name="posseTerra" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3">
+                                <option>Própria</option><option>Arrendada</option><option>Cedida</option><option>Assentamento</option><option>Outro</option>
+                            </select>
+                            <input type="text" id="posseTerraOutro" name="posseTerraOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Culturas com área e irrigação</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Milho" data-details="detalhesMilho" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Milho</label><div id="detalhesMilho" class="hidden mt-3 pl-8 space-y-3"><input type="number" step="0.1" id="areaMilho" name="areaMilho" placeholder="Área cultivada (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div class="flex flex-col gap-2"><span class="text-lg">Irrigado?</span><div class="selectable-buttons flex gap-2" data-target-input="irrigadoMilho"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="irrigadoMilho" name="irrigadoMilho"></div></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Feijão" data-details="detalhesFeijao" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Feijão</label><div id="detalhesFeijao" class="hidden mt-3 pl-8 space-y-3"><input type="number" step="0.1" id="areaFeijao" name="areaFeijao" placeholder="Área cultivada (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div class="flex flex-col gap-2"><span class="text-lg">Irrigado?</span><div class="selectable-buttons flex gap-2" data-target-input="irrigadoFeijao"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="irrigadoFeijao" name="irrigadoFeijao"></div></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Mandioca" data-details="detalhesMandioca" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Mandioca</label><div id="detalhesMandioca" class="hidden mt-3 pl-8 space-y-3"><input type="number" step="0.1" id="areaMandioca" name="areaMandioca" placeholder="Área cultivada (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div class="flex flex-col gap-2"><span class="text-lg">Irrigado?</span><div class="selectable-buttons flex gap-2" data-target-input="irrigadoMandioca"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="irrigadoMandioca" name="irrigadoMandioca"></div></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Hortaliças" data-details="detalhesHortalicas" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Hortaliças</label><div id="detalhesHortalicas" class="hidden mt-3 pl-8"><input type="text" id="especificarHortalicas" name="especificarHortalicas" placeholder="Ex: Alface, tomate, 0.5ha" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Fruticultura" data-details="detalhesFruticultura" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Fruticultura</label><div id="detalhesFruticultura" class="hidden mt-3 pl-8"><input type="text" id="especificarFruticultura" name="especificarFruticultura" placeholder="Ex: Manga, banana, 2ha" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Outro" data-details="detalhesOutro" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Outro</label><div id="detalhesOutro" class="hidden mt-3 pl-8"><input type="text" id="especificarOutro" name="especificarOutro" placeholder="Ex: Gergelim, 1.5ha" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Criação de animais com quantidade</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label for="bovinos" class="block text-lg font-medium text-gray-700">Bovinos</label><input type="number" id="bovinos" name="bovinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label for="caprinos" class="block text-lg font-medium text-gray-700">Caprinos</label><input type="number" id="caprinos" name="caprinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label for="ovinos" class="block text-lg font-medium text-gray-700">Ovinos</label><input type="number" id="ovinos" name="ovinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label for="suinos" class="block text-lg font-medium text-gray-700">Suínos</label><input type="number" id="suinos" name="suinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div class="col-span-2 md:col-span-4"><label for="outrasCriacoes" class="block text-lg font-medium text-gray-700">Outras criações</label><input type="text" id="outrasCriacoes" name="outrasCriacoes" placeholder="Ex: Galinhas, abelhas" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div>
+                    
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Atividades complementares</h3><div><label class="block text-lg font-medium text-gray-700">Outras atividades</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="outrasAtividades"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Agroindústria" data-triggers-details="true">Agroindústria</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Turismo Rural" data-triggers-details="true">Turismo Rural</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Apicultura">Apicultura</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Piscicultura">Piscicultura</button></div><input type="text" id="outrasAtividadesDetalhes" name="outrasAtividadesDetalhes" placeholder="Ex: Produção de queijo, Pousada" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Infraestrutura e equipamentos</h3><div class="space-y-4"><div><label class="block text-lg font-medium text-gray-700">Fonte de água</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="fonteAgua"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Poço">Poço</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Açude">Açude</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cisterna">Cisterna</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="fonteAguaOutro" name="fonteAguaOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label class="block text-lg font-medium text-gray-700">Energia elétrica?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="energiaEletrica"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="energiaEletrica" name="energiaEletrica"></div><div><label for="transporte" class="block text-lg font-medium text-gray-700">Transporte</label><input type="text" id="transporte" name="transporte" placeholder="Ex: Moto, carro, etc" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label class="block text-lg font-medium text-gray-700">Possui trator?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="possuiTrator"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="possuiTrator" name="possuiTrator"></div><div><label for="outrosEquipamentos" class="block text-lg font-medium text-gray-700">Outros equipamentos/máquinas</label><input type="text" id="outrosEquipamentos" name="outrosEquipamentos" placeholder="Ex: Forrageira, roçadeira" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div>
+                    
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Número de trabalhadores</h3><div><label class="block text-lg font-medium text-gray-700 mb-2">Trabalhadores</label><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="flex flex-col"><label for="trabalhadoresFamiliares" class="text-md text-gray-600 mb-1">Familiares</label><input type="number" id="trabalhadoresFamiliares" name="trabalhadoresFamiliares" placeholder="Qtd." class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div class="flex flex-col"><label for="trabalhadoresTemporarios" class="text-md text-gray-600 mb-1">Temporários</label><input type="number" id="trabalhadoresTemporarios" name="trabalhadoresTemporarios" placeholder="Qtd." class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div class="flex flex-col"><label for="trabalhadoresPermanentes" class="text-md text-gray-600 mb-1">Permanentes</label><input type="number" id="trabalhadoresPermanentes" name="trabalhadoresPermanentes" placeholder="Qtd." class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div></div>
+
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Destino, crédito e programas</h3><div class="space-y-4"><div><label class="block text-lg font-medium text-gray-700">Destino da produção</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="destinoProducao"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Consumo próprio">Consumo próprio</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Venda local">Venda local</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Feira">Feira</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cooperativa">Cooperativa</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="destinoProducaoOutro" name="destinoProducaoOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label class="block text-lg font-medium text-gray-700">Acesso a crédito?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="acessoCredito"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="acessoCredito" name="acessoCredito"></div><div><label class="block text-lg font-medium text-gray-700">Programas governamentais</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="programasGoverno"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PNAE">PNAE</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PAA">PAA</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PRONAF">PRONAF</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="programasGovernoOutro" name="programasGovernoOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div>
+
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Principais desafios</h3><div><label class="block text-lg font-medium text-gray-700">Principais desafios</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="desafios"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Água">Água</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Infraestrutura">Infraestrutura</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Crédito">Crédito</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Mercado">Mercado</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Assistência técnica">Assistência técnica</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="desafiosOutro" name="desafiosOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                    
+                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Observações gerais</h3><div><label for="observacoes" class="block text-lg font-medium text-gray-700">Anotações livres</label><textarea id="observacoes" name="observacoes" rows="4" placeholder="Alguma observação importante..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></textarea></div></div>
+                    
+                    <div class="mb-16 mt-6 p-4 border-t">
+                        <label class="flex items-center text-base">
+                            <input type="checkbox" id="lgpdConfirm" name="lgpdConfirm" required class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">
+                            <span class="text-gray-700">Declaro que o(a) entrevistado(a) foi esclarecido(a) sobre a natureza e o propósito da coleta de dados e que manifestou sua ciência e concordância, nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018).</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="absolute bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t rounded-b-lg flex justify-end gap-4">
+                <button id="cancel-btn" type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md">Cancelar</button>
+                <button id="save-btn" type="submit" form="census-form" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg text-gray-700 relative">
+            <button id="close-about-btn" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"><span class="material-symbols-outlined">close</span></button>
+            <h3 class="text-2xl font-bold mb-4 text-green-800">Sobre o Aplicativo</h3>
+            <p class="mb-2">Este aplicativo foi projetado para a coleta de dado do Censo Agropecuário – Município de Quixadá (2025).</p>
+            <p class="mb-4">Todos os dados são armazenados localmente no dispositivo.</p>
+            <hr class="my-4">
+            <p class="mb-2"><strong>Desenvolvido por:</strong><br><a href="https://www.quixada.ufc.br/" target="_blank" class="text-blue-600 hover:underline">UFC - Campus Quixadá</a></p>
+            <p><strong>Licença:</strong><br>Este software é distribuído sob a <a href="https://opensource.org/licenses/MIT" target="_blank" class="text-blue-600 hover:underline">Licença MIT</a>.</p>
+        </div>
+    </div>
+    
+    <div id="lgpd-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg relative">
+            <header class="p-4 border-b flex justify-between items-center">
+                 <h3 class="text-2xl font-bold text-green-800">Termo de Esclarecimento sobre a LGPD</h3>
+                 <button id="close-lgpd-btn" class="p-2 text-gray-400 hover:text-gray-600"><span class="material-symbols-outlined">close</span></button>
+            </header>
+            <div class="p-6 text-gray-700 max-h-[60vh] overflow-y-auto">
+                <p class="mb-4">Este termo esclarece a finalidade da coleta de dados para o Censo Agropecuário – Município de Quixadá (2025), em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
+                <ul class="list-disc list-inside space-y-2 mb-4">
+                    <li><strong>Finalidade:</strong> As informações coletadas, incluindo dados pessoais e de produção, serão utilizadas exclusivamente para fins estatísticos, visando a elaboração de um panorama sobre a produção agropecuária no município.</li>
+                    <li><strong>Proteção e Anonimato:</strong> Os dados pessoais são protegidos e não serão divulgados individualmente. A apresentação dos resultados ocorrerá de forma agregada, garantindo o sigilo e o anonimato dos participantes.</li>
+                    <li><strong>Participação:</strong> A colaboração com o censo é voluntária e fundamental para o desenvolvimento de políticas públicas para o setor agropecuário local.</li>
+                </ul>
+                <p>A coleta de dados só deverá ser iniciada após o esclarecimento destes pontos ao entrevistado.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center">
+            <h3 id="confirm-title" class="text-xl font-bold mb-4">Confirmar Ação</h3>
+            <p id="confirm-message" class="text-gray-600 mb-6">Você tem certeza?</p>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-cancel-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-lg">Cancelar</button>
+                <button id="confirm-action-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
