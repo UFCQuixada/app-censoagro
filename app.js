@@ -229,19 +229,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const csvContent = [headers.join(','), ...csvRows].join('\n');
         const fileName = `censo_agropecuario_${new Date().toISOString().split('T')[0]}.csv`;
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({
-                    files: [file],
-                    title: 'Dados do Censo Agropecuário',
-                    text: `Registros exportados em ${new Date().toLocaleDateString('pt-BR')}`
-                });
-            } catch (err) {
-                console.error('Erro ao compartilhar, usando download como fallback:', err);
-                triggerDownload(blob, fileName);
-            }
-        } else {
+
+        try {
+            const file = new File([blob], fileName, { type: 'text/csv' });
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], title: 'Dados do Censo Agropecuário', text: `Arquivo de dados do censo: ${fileName}` });
+            } else { triggerDownload(blob, fileName); }
+        } catch (error) {
+            console.error('Erro ao compartilhar:', error);
+            alert(`Ocorreu um erro ao tentar compartilhar. O download será iniciado como alternativa.`);
             triggerDownload(blob, fileName);
         }
     };
