@@ -290,8 +290,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('confirm-cancel-btn').addEventListener('click', () => closeModalUI(confirmDialog));
         document.getElementById('confirm-action-btn').addEventListener('click', () => { if (onConfirmAction) onConfirmAction(); });
         
-        form.addEventListener('click', (e) => {
+        const handleButtonInteraction = (e) => {
             const singleBtn = e.target.closest('.selectable-btn');
+            const multiBtn = e.target.closest('.selectable-multi-btn');
+
+            if (!singleBtn && !multiBtn) return;
+            
+            e.preventDefault();
+            
             if (singleBtn) {
                 const group = singleBtn.parentElement;
                 const targetInput = form.elements[group.dataset.targetInput];
@@ -301,12 +307,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetInput.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             }
-            const multiBtn = e.target.closest('.selectable-multi-btn');
+            
             if (multiBtn) {
                 multiBtn.classList.toggle('active');
                 multiBtn.dispatchEvent(new Event('change', { bubbles: true }));
             }
-        });
+        };
+
+        form.addEventListener('click', handleButtonInteraction);
+        form.addEventListener('touchstart', handleButtonInteraction);
 
         form.addEventListener('change', (e) => {
             if(e.target.matches('.selectable-multi-btn[data-value="Outro"]')){
