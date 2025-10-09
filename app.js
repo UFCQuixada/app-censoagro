@@ -321,14 +321,14 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('change', (e) => {
             const target = e.target;
             
+            // Lógica para mostrar/esconder campos "Outro" para botões de múltipla seleção
             if (target.matches('.selectable-multi-btn[data-value="Outro"]')) {
                 const groupName = target.parentElement.dataset.groupName;
-                let outroInput;
-                // Mapeia os nomes dos grupos para os nomes dos campos "outro"
                 const outroMap = {
                     participaOrg: 'participaOrgOutro',
                     posseTerra: 'posseTerraOutro',
                     fonteAgua: 'fonteAguaOutroQual',
+                    comercializacao: 'comercializacaoOutro',
                     programasGoverno: 'programasGovernoOutro',
                     tipoInternet: 'tipoInternetOutro',
                     registroProducaoTipo: 'registroProducaoOutro',
@@ -337,30 +337,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 const outroInputName = outroMap[groupName];
                 if (outroInputName) {
-                    outroInput = form.elements[outroInputName];
-                }
-                if (outroInput) {
-                    outroInput.classList.toggle('hidden', !target.classList.contains('active'));
-                }
-            }
-
-            if(target.matches('input[type=checkbox]')){
-                const detailsDiv = target.closest('label').nextElementSibling;
-                // Verifica se o próximo elemento não é um input numérico (caso da mão de obra)
-                if(detailsDiv && !detailsDiv.matches('input[type=number]')) {
-                   detailsDiv.classList.toggle('hidden', !target.checked);
-                   detailsDiv.setAttribute('data-logic-hidden', '');
-                }
-                
-                // Lógica específica para os checkboxes de mão de obra
-                if(target.name.startsWith('maoObra')) {
-                    const qtdInput = target.closest('.flex').querySelector('input[type=number]');
-                    if(qtdInput){
-                        qtdInput.classList.toggle('hidden', !target.checked);
+                    const outroInput = form.elements[outroInputName];
+                    if (outroInput) {
+                        outroInput.classList.toggle('hidden', !target.classList.contains('active'));
                     }
                 }
             }
 
+            // Lógica unificada para mostrar/esconder detalhes em checkboxes
+            if(target.matches('input[type=checkbox]')){
+                const detailsDiv = target.closest('label').nextElementSibling;
+                if(detailsDiv) {
+                   detailsDiv.classList.toggle('hidden', !target.checked);
+                   detailsDiv.setAttribute('data-logic-hidden', '');
+                }
+            }
+
+            // Lógica para campos que dependem de outros inputs (selects, botões de seleção única)
             const targetName = target.name;
             if (targetName === 'escolaridade') {
                 form.elements.escolaridadeOutro.classList.toggle('hidden', target.value !== 'Outro');
