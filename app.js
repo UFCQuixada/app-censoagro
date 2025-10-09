@@ -310,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (multiBtn) {
                 multiBtn.classList.toggle('active');
+                // Dispara um evento de change no próprio botão para ser capturado pelo listener do formulário
                 multiBtn.dispatchEvent(new Event('change', { bubbles: true }));
             }
         };
@@ -318,33 +319,57 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('touchstart', handleButtonInteraction);
 
         form.addEventListener('change', (e) => {
-            if(e.target.matches('.selectable-multi-btn[data-value="Outro"]')){
-                const groupName = e.target.parentElement.dataset.groupName;
-                let outroInput = form.elements[`${groupName}Outro`] || form.elements[`${groupName}OutroQual`];
-                if (groupName === 'certificacoesTipo') {
-                   outroInput = form.elements['certificacoesOutro'];
+            const target = e.target;
+            
+            if (target.matches('.selectable-multi-btn[data-value="Outro"]')) {
+                const groupName = target.parentElement.dataset.groupName;
+                let outroInput;
+                // Mapeia os nomes dos grupos para os nomes dos campos "outro"
+                const outroMap = {
+                    participaOrg: 'participaOrgOutro',
+                    posseTerra: 'posseTerraOutro',
+                    fonteAgua: 'fonteAguaOutroQual',
+                    programasGoverno: 'programasGovernoOutro',
+                    tipoInternet: 'tipoInternetOutro',
+                    registroProducaoTipo: 'registroProducaoOutro',
+                    certificacoesTipo: 'certificacoesOutro',
+                    dificuldades: 'dificuldadesOutro'
+                };
+                const outroInputName = outroMap[groupName];
+                if (outroInputName) {
+                    outroInput = form.elements[outroInputName];
                 }
-                 if (groupName === 'tipoInternet') {
-                   outroInput = form.elements['tipoInternetOutro'];
+                if (outroInput) {
+                    outroInput.classList.toggle('hidden', !target.classList.contains('active'));
                 }
-                if(outroInput) outroInput.classList.toggle('hidden', !e.target.classList.contains('active'));
             }
-            if(e.target.matches('input[type=checkbox]')){
-                 const detailsDiv = e.target.closest('label').nextElementSibling;
-                 if(detailsDiv) {
-                    detailsDiv.classList.toggle('hidden', !e.target.checked);
-                    detailsDiv.setAttribute('data-logic-hidden', '');
-                 }
+
+            if(target.matches('input[type=checkbox]')){
+                const detailsDiv = target.closest('label').nextElementSibling;
+                // Verifica se o próximo elemento não é um input numérico (caso da mão de obra)
+                if(detailsDiv && !detailsDiv.matches('input[type=number]')) {
+                   detailsDiv.classList.toggle('hidden', !target.checked);
+                   detailsDiv.setAttribute('data-logic-hidden', '');
+                }
+                
+                // Lógica específica para os checkboxes de mão de obra
+                if(target.name.startsWith('maoObra')) {
+                    const qtdInput = target.closest('.flex').querySelector('input[type=number]');
+                    if(qtdInput){
+                        qtdInput.classList.toggle('hidden', !target.checked);
+                    }
+                }
             }
-            const targetName = e.target.name;
+
+            const targetName = target.name;
             if (targetName === 'escolaridade') {
-                form.elements.escolaridadeOutro.classList.toggle('hidden', e.target.value !== 'Outro');
+                form.elements.escolaridadeOutro.classList.toggle('hidden', target.value !== 'Outro');
             }
-            if(targetName === 'sucessaoFamiliar') form.elements.sucessaoFamiliarQuem.classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'possuiTanque') form.elements.tanqueCapacidade.classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'temEnergia') document.getElementById('tipoEnergiaContainer').classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'temTransporte') form.elements.tipoTransporte.classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'temTrator') form.elements.qtdTrator.classList.toggle('hidden', e.target.value !== 'Sim');
+            if(targetName === 'sucessaoFamiliar') form.elements.sucessaoFamiliarQuem.classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'possuiTanque') form.elements.tanqueCapacidade.classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'temEnergia') document.getElementById('tipoEnergiaContainer').classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'temTransporte') form.elements.tipoTransporte.classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'temTrator') form.elements.qtdTrator.classList.toggle('hidden', target.value !== 'Sim');
             
             if(targetName === 'temAcessoCredito' || targetName === 'interesseCredito') {
                 const temAcessoVal = form.elements.temAcessoCredito.value;
@@ -360,12 +385,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            if(targetName === 'participaProgramaGov') document.getElementById('programasGovContainer').classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'usaSoftwareGestao') form.elements.softwareGestaoQual.classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'usaApps') form.elements.appsQuais.classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'temInternet') document.getElementById('tipoInternetContainer').classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'fazRegistroProducao') document.getElementById('registroProducaoContainer').classList.toggle('hidden', e.target.value !== 'Sim');
-            if(targetName === 'temCertificacao') document.getElementById('certificacaoContainer').classList.toggle('hidden', e.target.value !== 'Sim');
+            if(targetName === 'participaProgramaGov') document.getElementById('programasGovContainer').classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'usaSoftwareGestao') form.elements.softwareGestaoQual.classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'usaApps') form.elements.appsQuais.classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'temInternet') document.getElementById('tipoInternetContainer').classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'fazRegistroProducao') document.getElementById('registroProducaoContainer').classList.toggle('hidden', target.value !== 'Sim');
+            if(targetName === 'temCertificacao') document.getElementById('certificacaoContainer').classList.toggle('hidden', target.value !== 'Sim');
         });
     };
 
@@ -377,4 +402,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     init();
 });
-
