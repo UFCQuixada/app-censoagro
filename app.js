@@ -229,7 +229,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const csvContent = [headers.join(','), ...csvRows].join('\n');
         const fileName = `censo_agropecuario_${new Date().toISOString().split('T')[0]}.csv`;
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        triggerDownload(blob, fileName);
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: 'Dados do Censo Agropecuário',
+                    text: `Registros exportados em ${new Date().toLocaleDateString('pt-BR')}`
+                });
+            } catch (err) {
+                console.error('Erro ao compartilhar, usando download como fallback:', err);
+                triggerDownload(blob, fileName);
+            }
+        } else {
+            triggerDownload(blob, fileName);
+        }
     };
     
     const handleGetCoords = () => {
