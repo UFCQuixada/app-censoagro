@@ -32,7 +32,7 @@
         <header class="bg-green-800 text-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-20">
             <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-3xl">eco</span>
-                <h1 class="text-xl font-bold">Censo Agropecuário de Quixadá</h1>
+                <h1 class="text-xl font-bold">Censo Agropecuário 2025</h1>
             </div>
             <div id="menu-wrapper" class="relative">
                 <button id="record-counter-btn" class="bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-full h-10 w-10 flex items-center justify-center transition-colors">
@@ -68,8 +68,9 @@
         </footer>
     </div>
 
+    <!-- FORM MODAL -->
     <div id="form-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col relative">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col relative">
             <header class="p-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 flex justify-between items-center">
                 <h2 id="modal-title" class="text-2xl font-bold text-green-800">Adicionar Novo Registro</h2>
                 <button id="lgpd-info-btn" class="text-blue-600 hover:text-blue-800" title="Informações sobre a LGPD">
@@ -78,67 +79,291 @@
             </header>
             
             <div class="overflow-y-auto p-6 modal-body">
-                <form id="census-form">
+                <form id="census-form" class="space-y-8">
                     <input type="hidden" id="record-id" name="record-id">
 
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Identificação do produtor e estabelecimento</h3>
+                    <!-- Identificação do Produtor e Estabelecimento -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Identificação do Produtor e Estabelecimento</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="md:col-span-2"><label for="nomeCompleto" class="block text-lg font-medium text-gray-700">Nome completo*</label><input type="text" id="nomeCompleto" name="nomeCompleto" required placeholder="Ex: João da Silva" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
                             <div><label for="cpf" class="block text-lg font-medium text-gray-700">CPF</label><input type="text" id="cpf" name="cpf" inputmode="numeric" placeholder="111.222.333-44" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                            <div><label class="block text-lg font-medium text-gray-700">Sexo</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="sexo"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200 w-full" data-value="Masculino">Masculino</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200 w-full" data-value="Feminino">Feminino</button></div><input type="hidden" id="sexo" name="sexo"></div>
+                            <div class="md:col-span-2">
+                                <label for="escolaridade" class="block text-lg font-medium text-gray-700">Escolaridade</label>
+                                <select id="escolaridade" name="escolaridade" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3">
+                                    <option value="" selected disabled>Selecione a escolaridade</option>
+                                    <option value="Ensino Fundamental (incompleto)">Ensino Fundamental (incompleto)</option>
+                                    <option value="Ensino Fundamental (completo)">Ensino Fundamental (completo)</option>
+                                    <option value="Ensino Médio (incompleto)">Ensino Médio (incompleto)</option>
+                                    <option value="Ensino Médio (completo)">Ensino Médio (completo)</option>
+                                    <option value="Ensino Superior (incompleto)">Ensino Superior (incompleto)</option>
+                                    <option value="Ensino Superior (completo)">Ensino Superior (completo)</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                                <input type="text" id="escolaridadeOutro" name="escolaridadeOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                            </div>
                             <div><label for="telefone" class="block text-lg font-medium text-gray-700">Telefone</label><input type="tel" id="telefone" name="telefone" inputmode="numeric" placeholder="(88) 91234-5678" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
-                            <div class="md:col-span-2"><label for="endereco" class="block text-lg font-medium text-gray-700">Endereço da propriedade</label><input type="text" id="endereco" name="endereco" placeholder="Ex: Sítio Cajueiro, Distrito de Juá" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                            <div class="md:col-span-2"><label for="tempoAtividade" class="block text-lg font-medium text-gray-700">Tempo de atividade agropecuária</label><input type="text" id="tempoAtividade" name="tempoAtividade" placeholder="Ex: 15 anos" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Endereço da propriedade -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Endereço da propriedade</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2"><label for="nomeFazenda" class="block text-lg font-medium text-gray-700">Nome da propriedade</label><input type="text" id="nomeFazenda" name="nomeFazenda" placeholder="Ex: Fazenda Nova Esperança" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                            <div><label for="localidade" class="block text-lg font-medium text-gray-700">Localidade</label><input type="text" id="localidade" name="localidade" placeholder="Ex: Sítio Cajueiro" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                            <div><label for="distrito" class="block text-lg font-medium text-gray-700">Distrito</label><input type="text" id="distrito" name="distrito" placeholder="Ex: Juá" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
                              <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                                 <div class="sm:col-span-2">
-                                    <label class="block text-lg font-medium text-gray-700">Geolocalização</label>
+                                    <label class="block text-lg font-medium text-gray-700">Coordenadas Geográfica</label>
                                     <div class="flex gap-2 mt-1">
                                         <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly class="block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm text-lg p-3">
                                         <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly class="block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm text-lg p-3">
                                     </div>
                                 </div>
-                                <button type="button" id="get-coords-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md flex items-center justify-center gap-2 text-lg"><span class="material-symbols-outlined">location_on</span> Obter coordenadas</button>
+                                <button type="button" id="get-coords-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md flex items-center justify-center gap-2 text-lg"><span class="material-symbols-outlined">location_on</span> Obter</button>
                             </div>
                             <div><label for="areaTotal" class="block text-lg font-medium text-gray-700">Área total (ha)</label><input type="number" id="areaTotal" name="areaTotal" step="0.1" placeholder="Ex: 50.5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
                              <div><label for="areaProdutiva" class="block text-lg font-medium text-gray-700">Área produtiva (ha)</label><input type="number" id="areaProdutiva" name="areaProdutiva" step="0.1" placeholder="Ex: 25.5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3"></div>
+                             <div class="md:col-span-2"><label for="numCAF" class="block text-lg font-medium text-gray-700">Nº CAF</label><input type="text" id="numCAF" name="numCAF" placeholder="Número de inscrição no CAF" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                             <div class="md:col-span-2">
+                                <label class="block text-lg font-medium text-gray-700">Planos de sucessão familiar?</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="selectable-buttons mt-2 flex gap-2" data-target-input="sucessaoFamiliar"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="sucessaoFamiliar" name="sucessaoFamiliar">
+                                    <input type="text" id="sucessaoFamiliarQuem" name="sucessaoFamiliarQuem" placeholder="Quem? Ex: Filho(a)" class="hidden mt-1 flex-1 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-lg font-medium text-gray-700">Participa de:</label>
+                                <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="participaOrg"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Associação">Associação</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cooperativa">Cooperativa</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sindicato">Sindicato</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                                <input type="text" id="participaOrgOutro" name="participaOrgOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Tipo de posse e documentação</h3>
-                         <div class="md:col-span-2">
-                            <label for="posseTerra" class="block text-lg font-medium text-gray-700">Tipo de posse da terra</label>
-                            <select id="posseTerra" name="posseTerra" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3">
-                                <option>Própria</option><option>Arrendada</option><option>Cedida</option><option>Assentamento</option><option>Outro</option>
-                            </select>
-                            <input type="text" id="posseTerraOutro" name="posseTerraOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
-                        </div>
+                    <!-- Faixa de Faturamento -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Faixa de Faturamento</h3>
+                        <select id="faturamento" name="faturamento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-lg p-3">
+                            <option value="" selected disabled>Selecione uma faixa</option>
+                            <option value="Ate 360k">Até 360.000,00 mil reais.</option>
+                            <option value="360k a 1.6M">De 360.000,00 mil a 1.600.000,00 milhões.</option>
+                            <option value="Acima 1.6M">Acima de 1.600.000,00 milhões.</option>
+                        </select>
                     </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Culturas com área e irrigação</h3>
+
+                    <!-- Tipo de Posse da Terra -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Tipo de Posse da Terra</h3>
+                        <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="posseTerra"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Própria">Própria</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Arrendada">Arrendada</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cedida">Cedida</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Posse">Posse</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Assentamento">Assentamento</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                        <input type="text" id="posseTerraOutro" name="posseTerraOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                    </div>
+
+                    <!-- Atividades Agrícolas -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Atividades Agrícolas</h3>
                         <div class="space-y-4">
-                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Milho" data-details="detalhesMilho" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Milho</label><div id="detalhesMilho" class="hidden mt-3 pl-8 space-y-3"><input type="number" step="0.1" id="areaMilho" name="areaMilho" placeholder="Área cultivada (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div class="flex flex-col gap-2"><span class="text-lg">Irrigado?</span><div class="selectable-buttons flex gap-2" data-target-input="irrigadoMilho"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="irrigadoMilho" name="irrigadoMilho"></div></div></div>
-                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Feijão" data-details="detalhesFeijao" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Feijão</label><div id="detalhesFeijao" class="hidden mt-3 pl-8 space-y-3"><input type="number" step="0.1" id="areaFeijao" name="areaFeijao" placeholder="Área cultivada (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div class="flex flex-col gap-2"><span class="text-lg">Irrigado?</span><div class="selectable-buttons flex gap-2" data-target-input="irrigadoFeijao"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="irrigadoFeijao" name="irrigadoFeijao"></div></div></div>
-                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Mandioca" data-details="detalhesMandioca" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Mandioca</label><div id="detalhesMandioca" class="hidden mt-3 pl-8 space-y-3"><input type="number" step="0.1" id="areaMandioca" name="areaMandioca" placeholder="Área cultivada (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div class="flex flex-col gap-2"><span class="text-lg">Irrigado?</span><div class="selectable-buttons flex gap-2" data-target-input="irrigadoMandioca"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="irrigadoMandioca" name="irrigadoMandioca"></div></div></div>
-                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Hortaliças" data-details="detalhesHortalicas" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Hortaliças</label><div id="detalhesHortalicas" class="hidden mt-3 pl-8"><input type="text" id="especificarHortalicas" name="especificarHortalicas" placeholder="Ex: Alface, tomate, 0.5ha" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
-                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Fruticultura" data-details="detalhesFruticultura" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Fruticultura</label><div id="detalhesFruticultura" class="hidden mt-3 pl-8"><input type="text" id="especificarFruticultura" name="especificarFruticultura" placeholder="Ex: Manga, banana, 2ha" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
-                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="atividadesAgricolas" value="Outro" data-details="detalhesOutro" class="h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-3">Outro</label><div id="detalhesOutro" class="hidden mt-3 pl-8"><input type="text" id="especificarOutro" name="especificarOutro" placeholder="Ex: Gergelim, 1.5ha" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="cultivaMilho" class="h-6 w-6 rounded mr-3">Milho</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="number" step="0.1" name="areaMilho" placeholder="Área (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div><label>Irrigado?</label><div class="selectable-buttons flex gap-2" data-target-input="irrigadoMilho"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="irrigadoMilho"></div></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="cultivaFeijao" class="h-6 w-6 rounded mr-3">Feijão</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="number" step="0.1" name="areaFeijao" placeholder="Área (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div><label>Irrigado?</label><div class="selectable-buttons flex gap-2" data-target-input="irrigadoFeijao"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="irrigadoFeijao"></div></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="cultivaMandioca" class="h-6 w-6 rounded mr-3">Mandioca</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="number" step="0.1" name="areaMandioca" placeholder="Área (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><div><label>Irrigado?</label><div class="selectable-buttons flex gap-2" data-target-input="irrigadoMandioca"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="irrigadoMandioca"></div></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="cultivaHortalicas" class="h-6 w-6 rounded mr-3">Hortaliças</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" name="tipoHortalicas" placeholder="Quais? Ex: Alface, tomate" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><input type="number" step="0.1" name="areaHortalicas" placeholder="Área (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="cultivaFruticultura" class="h-6 w-6 rounded mr-3">Fruticultura</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" name="tipoFruticultura" placeholder="Quais? Ex: Manga, banana" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"><input type="number" step="0.1" name="areaFruticultura" placeholder="Área (ha)" class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="cultivaOutras" class="h-6 w-6 rounded mr-3">Outras culturas</label><textarea name="outrasCulturas" rows="2" placeholder="Quais? Ex: Sorgo, gergelim" class="hidden mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></textarea></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pecuária -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Pecuária</h3>
+                        <div class="space-y-4">
+                             <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="criaBovinos" class="h-6 w-6 rounded mr-3">Bovinos</label><div class="hidden mt-3 pl-8 space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label>Quantidade</label><input type="number" name="bovinosQtd" placeholder="Nº de cabeças" class="mt-1 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                                    <div><label>Finalidade</label><div class="multi-selectable-buttons mt-2 flex gap-2" data-group-name="bovinosFinalidade"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Corte">Corte</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Leite">Leite</button></div></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div><label>Tanque?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="possuiTanque"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="possuiTanque"></div>
+                                    <input type="text" name="tanqueCapacidade" placeholder="Capacidade (Litros)" class="hidden self-end w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                    <div><label>Produz Queijo?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="produzQueijo"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="produzQueijo"></div>
+                                </div>
+                            </div></div>
+                             <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="criaCaprinos" class="h-6 w-6 rounded mr-3">Caprinos</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Quantidade</label><input type="number" name="caprinosQtd" placeholder="Nº de cabeças" class="mt-1 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                                <div><label>Finalidade</label><div class="multi-selectable-buttons mt-2 flex gap-2" data-group-name="caprinosFinalidade"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Corte">Corte</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Leite">Leite</button></div></div>
+                            </div></div>
+                             <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="criaOvinos" class="h-6 w-6 rounded mr-3">Ovinos</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Quantidade</label><input type="number" name="ovinosQtd" placeholder="Nº de cabeças" class="mt-1 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                                <div><label>Finalidade</label><div class="multi-selectable-buttons mt-2 flex gap-2" data-group-name="ovinosFinalidade"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Corte">Corte</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Recria">Recria</button></div></div>
+                            </div></div>
+                             <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="criaSuinos" class="h-6 w-6 rounded mr-3">Suínos</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Quantidade</label><input type="number" name="suinosQtd" placeholder="Nº de cabeças" class="mt-1 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                                <div><label>Finalidade</label><div class="multi-selectable-buttons mt-2 flex gap-2" data-group-name="suinosFinalidade"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Corte">Corte</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Recria">Recria</button></div></div>
+                            </div></div>
+                             <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="criaAves" class="h-6 w-6 rounded mr-3">Aves</label><div class="hidden mt-3 pl-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Quantidade</label><input type="number" name="avesQtd" placeholder="Nº de cabeças" class="mt-1 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                                <div><label>Finalidade</label><div class="multi-selectable-buttons mt-2 flex gap-2" data-group-name="avesFinalidade"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Corte">Corte</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Postura">Postura</button></div></div>
+                            </div></div>
+                             <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="criaOutras" class="h-6 w-6 rounded mr-3">Outras criações</label><textarea name="outrasCriacoes" rows="2" placeholder="Quais? Ex: Peixes, 500; Abelhas, 10 caixas" class="hidden mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></textarea></div>
                         </div>
                     </div>
 
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Criação de animais com quantidade</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label for="bovinos" class="block text-lg font-medium text-gray-700">Bovinos</label><input type="number" id="bovinos" name="bovinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label for="caprinos" class="block text-lg font-medium text-gray-700">Caprinos</label><input type="number" id="caprinos" name="caprinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label for="ovinos" class="block text-lg font-medium text-gray-700">Ovinos</label><input type="number" id="ovinos" name="ovinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label for="suinos" class="block text-lg font-medium text-gray-700">Suínos</label><input type="number" id="suinos" name="suinos" placeholder="Qtd." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div class="col-span-2 md:col-span-4"><label for="outrasCriacoes" class="block text-lg font-medium text-gray-700">Outras criações</label><input type="text" id="outrasCriacoes" name="outrasCriacoes" placeholder="Ex: Galinhas, abelhas" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div>
-                    
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Atividades complementares</h3><div><label class="block text-lg font-medium text-gray-700">Outras atividades</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="outrasAtividades"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Agroindústria" data-triggers-details="true">Agroindústria</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Turismo Rural" data-triggers-details="true">Turismo Rural</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Apicultura">Apicultura</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Piscicultura">Piscicultura</button></div><input type="text" id="outrasAtividadesDetalhes" name="outrasAtividadesDetalhes" placeholder="Ex: Produção de queijo, Pousada" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                    <!-- Outras Atividades -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Outras Atividades</h3>
+                         <div class="space-y-4">
+                            <div class="p-2 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="temApicultura" class="h-6 w-6 rounded mr-3">Apicultura</label></div>
+                            <div class="p-2 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="temPiscicultura" class="h-6 w-6 rounded mr-3">Piscicultura</label></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="temAgroindustria" class="h-6 w-6 rounded mr-3">Agroindústria</label><input type="text" name="agroindustriaQual" placeholder="Qual? Ex: Produção de queijo" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                            <div class="p-4 border rounded-md"><label class="flex items-center text-lg"><input type="checkbox" name="temTurismoRural" class="h-6 w-6 rounded mr-3">Turismo rural</label><input type="text" name="turismoRuralQual" placeholder="Qual? Ex: Pousada" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                         </div>
+                    </div>
 
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Infraestrutura e equipamentos</h3><div class="space-y-4"><div><label class="block text-lg font-medium text-gray-700">Fonte de água</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="fonteAgua"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Poço">Poço</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Açude">Açude</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cisterna">Cisterna</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="fonteAguaOutro" name="fonteAguaOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label class="block text-lg font-medium text-gray-700">Energia elétrica?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="energiaEletrica"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="energiaEletrica" name="energiaEletrica"></div><div><label for="transporte" class="block text-lg font-medium text-gray-700">Transporte</label><input type="text" id="transporte" name="transporte" placeholder="Ex: Moto, carro, etc" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label class="block text-lg font-medium text-gray-700">Possui trator?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="possuiTrator"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="possuiTrator" name="possuiTrator"></div><div><label for="outrosEquipamentos" class="block text-lg font-medium text-gray-700">Outros equipamentos/máquinas</label><input type="text" id="outrosEquipamentos" name="outrosEquipamentos" placeholder="Ex: Forrageira, roçadeira" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div>
-                    
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Número de trabalhadores</h3><div><label class="block text-lg font-medium text-gray-700 mb-2">Trabalhadores</label><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="flex flex-col"><label for="trabalhadoresFamiliares" class="text-md text-gray-600 mb-1">Familiares</label><input type="number" id="trabalhadoresFamiliares" name="trabalhadoresFamiliares" placeholder="Qtd." class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div class="flex flex-col"><label for="trabalhadoresTemporarios" class="text-md text-gray-600 mb-1">Temporários</label><input type="number" id="trabalhadoresTemporarios" name="trabalhadoresTemporarios" placeholder="Qtd." class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div class="flex flex-col"><label for="trabalhadoresPermanentes" class="text-md text-gray-600 mb-1">Permanentes</label><input type="number" id="trabalhadoresPermanentes" name="trabalhadoresPermanentes" placeholder="Qtd." class="w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div></div>
+                    <!-- Infraestrutura -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Infraestrutura</h3>
+                        <div class="space-y-4">
+                            <div><label class="block text-lg font-medium text-gray-700">Fonte de água</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="fonteAgua"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Poço">Poço</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Açude">Açude</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cisterna">Cisterna</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="fonteAguaOutroQual" name="fonteAguaOutroQual" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                            <div>
+                                <label class="block text-lg font-medium text-gray-700">Energia elétrica</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="selectable-buttons mt-2 flex gap-2" data-target-input="temEnergia"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="temEnergia">
+                                    <div id="tipoEnergiaContainer" class="hidden flex items-center gap-2">
+                                        <label>Qual?</label>
+                                        <div class="selectable-buttons flex gap-2" data-target-input="tipoEnergia"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Monofásica">Monofásica</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Trifásica">Trifásica</button></div><input type="hidden" name="tipoEnergia">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-lg font-medium text-gray-700">Possui Transporte</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="selectable-buttons mt-2 flex gap-2" data-target-input="temTransporte"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="temTransporte">
+                                    <input type="text" name="tipoTransporte" placeholder="Qual? Ex: Moto, Carro" class="hidden mt-1 flex-1 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                </div>
+                            </div>
+                             <div>
+                                <label class="block text-lg font-medium text-gray-700">Possui trator?</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="selectable-buttons mt-2 flex gap-2" data-target-input="temTrator"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="temTrator">
+                                    <input type="number" name="qtdTrator" placeholder="Quantos?" class="hidden mt-1 w-32 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                </div>
+                            </div>
+                            <div><label for="outrosEquipamentos" class="block text-lg font-medium text-gray-700">Outros equipamentos/máquinas</label><input type="text" id="outrosEquipamentos" name="outrosEquipamentos" placeholder="Qual? Ex: Forrageira" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                        </div>
+                    </div>
 
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Destino, crédito e programas</h3><div class="space-y-4"><div><label class="block text-lg font-medium text-gray-700">Destino da produção</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="destinoProducao"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Consumo próprio">Consumo próprio</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Venda local">Venda local</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Feira">Feira</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cooperativa">Cooperativa</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="destinoProducaoOutro" name="destinoProducaoOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div><div><label class="block text-lg font-medium text-gray-700">Acesso a crédito?</label><div class="selectable-buttons mt-2 flex gap-2" data-target-input="acessoCredito"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" id="acessoCredito" name="acessoCredito"></div><div><label class="block text-lg font-medium text-gray-700">Programas governamentais</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="programasGoverno"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PNAE">PNAE</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PAA">PAA</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PRONAF">PRONAF</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="programasGovernoOutro" name="programasGovernoOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div></div>
+                    <!-- Mão de Obra -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Mão de Obra (Quem executa)</h3>
+                        <div class="space-y-2">
+                             <div class="flex items-center gap-4 p-2 border rounded-md"><label class="flex-1 flex items-center text-lg"><input type="checkbox" name="maoObraFamiliar" class="h-6 w-6 rounded mr-3">Familiar</label><input type="number" name="qtdMaoObraFamiliar" placeholder="Quantidade" class="hidden w-40 border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                             <div class="flex items-center gap-4 p-2 border rounded-md"><label class="flex-1 flex items-center text-lg"><input type="checkbox" name="maoObraTemporaria" class="h-6 w-6 rounded mr-3">Temporária contratada</label><input type="number" name="qtdMaoObraTemporaria" placeholder="Quantidade" class="hidden w-40 border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                             <div class="flex items-center gap-4 p-2 border rounded-md"><label class="flex-1 flex items-center text-lg"><input type="checkbox" name="maoObraPermanente" class="h-6 w-6 rounded mr-3">Permanente contratada</label><input type="number" name="qtdMaoObraPermanente" placeholder="Quantidade" class="hidden w-40 border-gray-300 rounded-md shadow-sm text-lg p-3"></div>
+                        </div>
+                    </div>
 
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Principais desafios</h3><div><label class="block text-lg font-medium text-gray-700">Principais desafios</label><div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="desafios"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Água">Água</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Infraestrutura">Infraestrutura</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Crédito">Crédito</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Mercado">Mercado</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Assistência técnica">Assistência técnica</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div><input type="text" id="desafiosOutro" name="desafiosOutro" placeholder="Especificar qual" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></div></div>
+                    <!-- Comercialização -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Comercialização (Destino da produção)</h3>
+                        <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="comercializacao"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Consumo próprio">Consumo próprio</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Venda local">Venda local</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Feira">Feira</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Cooperativa">Cooperativa</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Lacticínios">Lacticínios</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                        <input type="text" name="comercializacaoOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                    </div>
+
+                    <!-- Acesso a Crédito -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Acesso a Crédito</h3>
+                        <div class="flex items-center gap-4">
+                            <div class="selectable-buttons mt-2 flex gap-2" data-target-input="temAcessoCredito"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="temAcessoCredito">
+                            <div id="interesseCreditoContainer" class="hidden flex items-center gap-2">
+                                <label>Tem interesse?</label>
+                                <div class="selectable-buttons flex gap-2" data-target-input="interesseCredito"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="interesseCredito">
+                            </div>
+                        </div>
+                        <input type="text" name="interesseCreditoQual" placeholder="Qual? Ex: Banco do Nordeste" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                    </div>
                     
-                    <div class="mb-6"><h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Observações gerais</h3><div><label for="observacoes" class="block text-lg font-medium text-gray-700">Anotações livres</label><textarea id="observacoes" name="observacoes" rows="4" placeholder="Alguma observação importante..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></textarea></div></div>
+                    <!-- Programas governamentais -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Participa de programas governamentais?</h3>
+                         <div class="selectable-buttons mt-2 flex gap-2" data-target-input="participaProgramaGov"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="participaProgramaGov">
+                         <div id="programasGovContainer" class="hidden mt-4">
+                             <label class="block text-lg font-medium text-gray-700">Qual:</label>
+                             <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="programasGoverno"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PNAE">PNAE</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PAA">PAA</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="PRONAF">PRONAF</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                            <input type="text" name="programasGovernoOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                         </div>
+                    </div>
+                    
+                    <!-- Gestão da Propriedade -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Gestão da Propriedade (Uso de tecnologias digitais)</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-lg font-medium text-gray-700">Software de gestão</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="selectable-buttons mt-2 flex gap-2" data-target-input="usaSoftwareGestao"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="usaSoftwareGestao">
+                                    <input type="text" name="softwareGestaoQual" placeholder="Qual?" class="hidden mt-1 flex-1 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-lg font-medium text-gray-700">Aplicativos</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="selectable-buttons mt-2 flex gap-2" data-target-input="usaApps"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="usaApps">
+                                    <input type="text" name="appsQuais" placeholder="Quais?" class="hidden mt-1 flex-1 border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-lg font-medium text-gray-700">Internet na propriedade</label>
+                                <div class="selectable-buttons mt-2 flex gap-2" data-target-input="temInternet"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="temInternet">
+                                <div id="tipoInternetContainer" class="hidden mt-4">
+                                    <label class="block text-lg font-medium text-gray-700">Qual tipo?</label>
+                                    <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="tipoInternet">
+                                        <button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Movel">Móvel (3G/4G/5G)</button>
+                                        <button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Radio">Rádio</button>
+                                        <button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Satelite">Satélite</button>
+                                        <button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Fibra">Fibra</button>
+                                        <button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button>
+                                    </div>
+                                    <input type="text" name="tipoInternetOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Registro de produção -->
+                    <div>
+                         <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Registro de produção</h3>
+                         <div class="selectable-buttons mt-2 flex gap-2" data-target-input="fazRegistroProducao"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="fazRegistroProducao">
+                         <div id="registroProducaoContainer" class="hidden mt-4">
+                             <label class="block text-lg font-medium text-gray-700">Qual?</label>
+                             <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="registroProducaoTipo"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Caderno de Campo">Caderno de Campo</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Planilha">Planilha</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Bloco">Bloco</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                            <input type="text" name="registroProducaoOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                         </div>
+                    </div>
+
+                    <!-- Certificações -->
+                    <div>
+                         <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Certificações</h3>
+                         <div class="selectable-buttons mt-2 flex gap-2" data-target-input="temCertificacao"><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Sim">Sim</button><button type="button" class="selectable-btn py-2 px-4 rounded-md bg-gray-200" data-value="Não">Não</button></div><input type="hidden" name="temCertificacao">
+                         <div id="certificacaoContainer" class="hidden mt-4">
+                             <label class="block text-lg font-medium text-gray-700">Qual?</label>
+                             <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="certificacoesTipo"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Orgânico">Orgânico</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Selo de qualidade">Selo de qualidade</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Rastreabilidade">Rastreabilidade</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                              <input type="text" name="certificacoesOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                         </div>
+                    </div>
+
+                    <!-- Dificuldades -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Dificuldades (Principais desafios)</h3>
+                        <div class="multi-selectable-buttons mt-2 flex flex-wrap gap-2" data-group-name="dificuldades"><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Água">Água</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Estradas">Estradas</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Energia">Energia</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Transporte">Transporte</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Crédito">Crédito</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Mercado">Mercado</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Assistência técnica">Assistência técnica</button><button type="button" class="selectable-multi-btn py-2 px-4 rounded-md bg-gray-200" data-value="Outro">Outro</button></div>
+                        <input type="text" name="dificuldadesOutro" placeholder="Qual?" class="hidden mt-2 w-full border-gray-300 rounded-md shadow-sm text-lg p-3">
+                    </div>
+
+                    <!-- Observações Finais -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-green-800 border-b pb-2 mb-4">Observações Finais</h3>
+                        <div><label for="observacoesFinais" class="block text-lg font-medium text-gray-700">Anotações livres</label><textarea id="observacoesFinais" name="observacoesFinais" rows="4" placeholder="Alguma observação importante..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3"></textarea></div>
+                    </div>
                     
                     <div class="mb-16 mt-6 p-4 border-t">
                         <label class="flex items-center text-base">
